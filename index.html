@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculateur de Fluence - WPM</title>
+    <style>
+        /* Styles globaux */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+        }
+        .container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .time-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        .time-group input {
+            width: 45%;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #4facfe;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #00c6ff;
+        }
+        .result {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .result-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        .result-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #4facfe;
+        }
+        #reset {
+            width: auto;
+            padding: 8px 16px;
+            background: #28a745;
+            color: #fff;
+            font-size: 14px;
+            font-weight: normal;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 30px;
+        }
+        #reset:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculateur de Fluence</h1>
+        <div class="form-group">
+            <label for="words">Nombre de mots lus :</label>
+            <input type="number" id="words" placeholder="Ex : 120" min="1">
+        </div>
+        <div class="form-group">
+            <label for="errors">Nombre d'erreurs :</label>
+            <input type="number" id="errors" placeholder="Ex : 5" min="0">
+        </div>
+        <div class="form-group">
+            <label>Temps :</label>
+            <div class="time-group">
+                <input type="number" id="minutes" placeholder="Minutes" min="0">
+                <input type="number" id="seconds" placeholder="Secondes" min="0" max="59">
+            </div>
+        </div>
+        <button id="calculate">Calculer</button>
+        <div class="result" id="result">
+            <div class="result-title">Score de fluence (MCLM) :</div>
+            <div class="result-value" id="result-value"></div>
+        </div>
+        <button id="reset">Réinitialiser</button>
+    </div>
+
+    <script>
+        document.getElementById('calculate').addEventListener('click', function() {
+            // Récupérer les valeurs saisies
+            const words = parseInt(document.getElementById('words').value);
+            const errors = parseInt(document.getElementById('errors').value);
+            const minutes = parseFloat(document.getElementById('minutes').value) || 0;
+            const seconds = parseFloat(document.getElementById('seconds').value) || 0;
+
+            // Validation des entrées
+            if (isNaN(words) || isNaN(errors) || words <= 0 || errors < 0 || (minutes === 0 && seconds === 0) || errors > words) {
+                document.getElementById('result-value').textContent = "Erreur";
+                return;
+            }
+
+            // Conversion du temps total en secondes
+            const totalSeconds = (minutes * 60) + seconds;
+
+            // Calcul du score de fluence
+            const wpm = Math.round(((words - errors) / totalSeconds) * 60);
+
+            // Affichage du résultat
+            const resultValue = document.getElementById('result-value');
+            resultValue.textContent = `${wpm}`;
+        });
+
+        // Fonction de réinitialisation
+        document.getElementById('reset').addEventListener('click', function() {
+            document.getElementById('words').value = '';
+            document.getElementById('errors').value = '';
+            document.getElementById('minutes').value = '';
+            document.getElementById('seconds').value = '';
+            document.getElementById('result-value').textContent = '';
+        });
+    </script>
+</body>
+</html>
